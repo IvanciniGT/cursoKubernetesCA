@@ -69,3 +69,119 @@ kubernetes - openshift      >    Entornos de producción basados en contenedores
     
 # Enrutador - Ingress 
 nginx
+
+
+
+############################################
+
+# Objetos en Kubernetes
+
+## Pod
+Conjunto de contenedores, que :
+- Tienen la misma configuración de RED:
+    - Comparten IP. 
+    - Las comunicaciones entre ellos se realizan mediante localhost
+- Tengo garantizado que su despliegue se realiza en el mimo nodo (la misma "máquina física")
+
+## Node
+Un máquina donde se está ejecutando kubernetes, y que forma parte de un cluster
+
+## Namespace
+En entorno aislado que generamos en un cluster de kubernetes, dentro del cual crearemos cosas.
+    default: Uno que se incluye siempre y que no usamos NUNCA
+    kube-system: Los pods del plano de control de kubernetes
+
+## Service
+
+## DaemonSet
+
+Una forma de desplegar Pods, que me asegura que de una plantilla de pod, se generan tantos pods como nodos tengo.
+En cada nodo se genera, se crea un pod, basado en la plantilla que se haya configurado.
+
+## Deployment
+
+## ReplicaSet
+
+## ServiceAccount
+
+## ConfigMap
+
+############################################
+
+# Qué compone un cluster mínimo de kubernetes?
+- Un plano de control
+    - Un conjunto de Pods (contenedores) que contienen las funcionalidades básicas de kubernetes.
+        - DNS               - Resolución interna de servicios
+        - API-manager       - Es el que recibe las peticiones del kubectl y las pasa al resto de contenedores de kubernetes
+        - Proxy de red      - Montar la red virtual interna del cluster. EN TODOS LOS NODOS
+        - Scheduller        - Quien decide donde se ubica un POD nuevo
+        - Manager           - Este hace un montón de cosas.
+        - ETCd              - Base de datos de Kubernetes
+- Configuraciones
+
+
+#####################
+kubectl - cli de kubernetes
+
+kubectl <verbo> <sobre_que?> --namespace kube-system
+                             --all-namespaces
+         get      objetos: node, namespace, pod, all
+         describe
+         apply -f FICHERO_YAML    -n NAMESPACE       <<<   Crear cosas en Kubernetes
+         delete -f FICHERO_YAML    -n NAMESPACE      <<<   Crear cosas en Kubernetes
+         logs    POD -c CONTENEDOR
+         exec [-it] POD -c CONTENEDOR -- COMANDO     <<<   Ejecutar un comando dentro de un contenedor
+         
+         
+         taint 
+         
+service mess --> service mesh (istio, linkerd)
+
+
+
+####################################################
+Como crear COSAS en kubernetes. Ejemplo 1. POD
+
+Todo se crea mediante ficheros YAML.
+    Todo? Hay otra manera de crear cosas en Kubernetes más allá de los ficheros YAML?
+        El kubectl permite crear cosas TAMBIEN. NI DE COÑA HAGAIS ESTO !!!!! PROHIBIDO
+
+Como son los ficheros YAML de Kubernetes
+####################################################
+---
+kind:           Pod
+apiVersion:     v1
+metadata:
+    name:       nginx_pod
+spec:
+    containers:
+        - name:     nginx_contenedor
+          image:    nginx:latest
+
+
+
+#####################################################
+Tipos de software :
+
+En un contenedor no montamos aplicaciones:
+Aplicación:     Tipo de software que ... está pensado para:
+                    - Ser ejecutado en primer plano 
+                    - Ejecutarse indefinidamente
+                    - Tener interacción con un usuario (PERSONA FISICA)
+***Servicio:       Tipo de software que ... está pensado para:
+                    - Ser ejecutado en segundo plano
+                    - Ejecutarse indefinidamente
+                    - Atender preticiones de otros programas 
+***Demonio:        Tipo de software que ... está pensado para:
+                    - Ser ejecutado en segundo plano
+                    - Ejecutarse indefinidamente
+                    - Va a su bola! 
+CUIDADO !!!! Scripts:        Tipo de software que ... está pensado para:
+                    - Ser ejecutado en donde sea
+                    - Ejecutarse de forma finita en el tiempo. 
+                    - Hace sus N tareas que tenga definidas y acaba!
+
+UN CONTENEDOR EN KUBERNETES ESTA PENSADO COMO UN ENTORNO AISLADO QUE TIENE INDEFINIDAMENTE UN PROCESO EN EJECUCION
+                                                                           ---------------
+                                                                           
+InitContainer <<<<<< Para montar Scripts! SE EJECUTAN DE FORMA FINITA EN EL TIEMPO. ACABAN                                                                            

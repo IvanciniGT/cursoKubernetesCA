@@ -1,0 +1,465 @@
+%YAML 1.2
+---
+# Un fichero YAML contiene uno o varios documentos YAML
+# Cada documento comienza con el simbolo ---
+# Opcionalmente, puede acabar con el simbolo ...
+# El primer documento de un fichero YAML puede obviar el simbolo ---
+# Los documentos YAML pueden incluir comentarios, que son obviados al procesar el documento.
+# Se toma como un comentario, los caracteres siguientes al símbolo # dentro de la misma linea de texto
+# Si el símbolo de comentario aparece en medio de una linea, debe ir precedido de un blanco.
+...
+---
+# Este es un documento
+...
+---
+# Este es otro documento
+...
+
+---
+# Un fichero YAML representa un nodo (un objeto).
+# Ejemplos de nodos sencillos son:
+---
+1 # Un número entero
+---
+true # Un valor lógico
+---
+Hola YAML # Un texto
+---
+2002-12-14 # Una fecha
+---
+null # Nada
+---
+# Un nodo también puede ser una lista, que es una secuencia agrupada y ordenada de nodos
+- Yo soy un objeto
+- Yo soy otro objeto
+...
+---
+# Otro tipo de nodo de uso común son los mapeos de valores, donde cada nodo tiene otro nodo que lo identifica
+identificador 1: Yo soy un objeto
+identificador 2: Yo soy otro objeto
+...
+---
+# En YAML se denomina un esquema al conjunto de reglas que permiten determinar el tipo de un nodo.
+# Cuando se escribe un documento YAML se hace de acuerdo a un esquema.
+# Según la especificación 1.2 de YAML, Cualquier programa que lea ficheros YAML debería al menos de leer:
+# - Esquema JSON. Un equema que ofrece compatibilidad con JSON
+# - Esquema core. Un esquema que permite utilizar numerosos tipos de datos básicos sin necesidad de indicar explicitamente de qué tipo son.
+# Según la especificación de YAML 1.2, los nuevos esquemass que se definan para una aplicación, deberían extender del esquema core.
+# En la versión 1.1 de la especificación de YAML no existía el concepto de esquema. YAML definía una colección de tipos básicos que no podía extenderse.
+...
+---
+# Según el esquema que se utilice, algunos tipos de algunos nodos se pueden determinar
+# sin necesidad de ser indicados explicitamente.
+---
+# Tipos que son determinados de forma explicita
+---
+# Valores numéricos admitidos
+entero:                    1    # Un número entero. Puede ir precedido por el signo -. En versión 1.1 y versión 1.2 (esquema core) por el signo +`.
+entero binario:       0b1010    # Sólo en versión 1.1 
+entero octal:           0o14    # Sólo en versión 1.1 y versión 1.2 (esquema core)
+entero hexadecimal:      0xC    # Sólo en versión 1.1 y versión 1.2 (esquema core)
+entero explicitado: !!int "5"   # Pudiendo obviar las comillas y utilizar cualquiera de los valores anteriores
+decimal:                 1.2    # Un número decimal. Puede ir precedido por el signo -. En versión 1.1 y versión 1.2 (esquema core) por el signo +`.
+formato cientifico:   -1.3e5    # Un número en formato científico. También se admite la E en mayúscula
+decimal explicitado: !!float "2.5"  # Pudiendo obviar las comillas y utilizar cualquiera de los valores anteriores
+infinito:               .inf    # Admitido en positivo y negativo: -.inf 
+                                # En versión 1.1 y versión 1.2 (esquema core) también .Inf y .INF. 
+indeterminado:          .nan    # En versión 1.1 y versión 1.2 (esquema core) también .NaN y NAN
+...
+---
+# Valores lógicos permitidos
+version 1.2 (esquema json):
+  - true
+  - false
+  - !!bool "true"   # Pudiendo obviar las comillas y utilizar cualquiera de los valores anteriores
+
+version 1.2 (esquema core):
+  - true    # También True y TRUE
+  - false   # También False y FALSE
+  - !!bool "true"   # Pudiendo obviar las comillas y utilizar cualquiera de los valores anteriores
+  
+version 1.1 (esquema core): # Desaconsejado su uso hoy en día
+  # Valores considerados como verdadero    
+  - true    # También True y TRUE
+  - false   # También False y FALSE
+  - y       # También Y. 
+  - yes     # También Yes y YES
+  - on      # También On y ON.
+  - !!bool "true"   # Pudiendo obviar las comillas y utilizar cualquiera de los valores anteriores  
+  # Valores considerados como falso    
+  - n       # También N
+  - no      # También No y NO
+  - off     # También Off y OFF
+  - !!bool "false"   # Pudiendo obviar las comillas y utilizar cualquiera de los valores anteriores
+...
+---
+# Ningún valor:
+versión 1.1 y 1.2(esquema core):
+  -
+  - null
+  - Null
+  - NULL
+  - ~
+  - !!null "null"     # Pudiendo obviar las comillas y utilizar cualquiera de los valores anteriores
+
+versión 1.2(esquema json):
+  - null
+  - !!null "null"     # Pudiendo obviar las comillas
+...
+---
+Textos en una linea:
+  - Esto es un texto              # Modo plain. Va sin comillas de ningún tipo. 
+  - "Esto también\n es un texto"    # Modo double-quoted. Admite dento caracteres de escape \n, \t, \\ \" y comillas simples
+  - 'Esto es "otro"\n texto'        # Modo single-quoted. Admite dento caracteres de escape \n, \t, \\ \" y comillas simples
+  - !!str "texto"
+
+
+- "Esto
+    es un texto qur ocupa 
+  varia lineas"
+- 'Esto
+    es un texto qur ocupa 
+  varia lineas'
+- >
+  Esto es otro
+  texto que 
+  también ocupa varias lineas en el fichero YAML, pero que se devuelve todo junto al procesarlo
+- >+
+  Esto es otro
+  texto que 
+  también ocupa varias lineas en el fichero YAML, pero que se devuelve todo junto al procesarlo
+- >-
+  Esto es otro
+  texto que 
+  también ocupa varias lineas en el fichero YAML, pero que se devuelve todo junto al procesarlo
+- |
+  Esto es otro
+  texto que 
+  también ocupa varias lineas que son mantenidas al procesarlo
+- |+
+  Esto es otro
+  texto que 
+  también ocupa varias lineas que son mantenidas al procesarlo
+- |-
+  Esto es otro
+  texto que 
+  también ocupa varias lineas que son mantenidas al procesarlo
+- |-2
+    Esto es otro
+    texto que 
+    también ocupa varias lineas que son mantenidas al procesarlo
+- "17"
+...
+---
+# Fechas
+- canonical:        2001-12-15T02:59:43.1Z
+- valid iso8601:    2001-12-14t21:59:43.10-05:00
+- space separated:  2001-12-14 21:59:43.10 -5 # Errata en especificación
+- no time zone (Z): 2001-12-15 2:59:43.10
+- date (00:00:00Z): 2002-12-14
+- explicito: !!timestamp "2001-12-15 2:59:43.10"
+...
+
+
+
+
+
+---
+# Listas
+soy una lista:
+  - item 1
+  - item 2
+  - item3
+soy otra lista: !!seq
+  - item 1
+  - item 2
+  - item 3
+soy otra lista mas: !!seq  [ item 1, item 2, item 3 ]
+yo también soy una lista: [ item 1, item 2, item 3 ]
+
+soy otra lista desordenada: !!set
+  ? item 1
+  ? item 2
+  ? item 3
+soy otra lista desordenada mas: !!set
+  item 1:
+  item 2:
+  item 3:
+...
+---
+# Diccionario
+soy un diccionario:
+  clave1: item 1
+  clave2: item 2
+  clave3: item 3
+soy otro diccionario: !!map
+  clave1: item 1
+  clave2: item 2
+  clave3: item3
+soy un diccionario mas: !!map  { clave1: item 1, clave2: item 2, clave3: item 3 }
+yo también soy un diccionario: { clave1: item 1, clave2: item 2, clave3: item 3 }
+
+soy otro diccionario ordenado: !!omap
+  - clave1: item 1
+  - clave2: item 2
+  - clave3: item3
+soy otro diccionario que admite repeticion: !!pairs
+  - clave2: item 1
+  - clave2: item 2
+  - clave3: item3
+...
+---
+# Combinar listas y diccionarios por niveles
+
+lista de nivel 1:
+  - item 1
+  - item 2
+  - lista de nivel 2:
+      - subitem 1
+      - subitem 2
+  - diccionario de nivel 2:
+      clave 1: valor 1
+      clave 2: valor 2
+
+...
+---
+  # Combinar listas y diccionarios por niveles
+
+  lista de nivel 1:
+    - item 1
+    - item 2
+    - lista de nivel 2:
+        - subitem 1
+        - subitem 2
+    - diccionario de nivel 2: &diccionario
+        clave 1: valor 1
+        clave 2: valor 2
+    - otro diccionario:
+        a: 5
+        <<: *diccionario
+...
+---
+# Otros tipos de datos
+!!binary 121837518394756191928461901289474819
+...
+---
+# Repetición de Objetos
+nombre: &nombre Ivan
+primer apellido: &primer_apellido Osuna
+segundo apellido: &segundo_apellido Ayuste
+nombre completo: [ *nombre , *primer_apellido , *segundo_apellido ]
+boleano: !!bool true
+...  
+---
+{
+  "nombre": "Ivan" ,
+  "apellidos:": ["Osuna, Ayuste"] ,
+  "edad": 42
+}
+...
+
+
+%YAML 1.2
+---
+nodos escalares:
+  numeros:
+
+    enteros:
+      sintaxis implícita:
+        entero sencillo:                17
+        entero negativo:                -17
+        entero en formato octal:        0c1264
+        entero en formato hexadecimal:  AB18
+      sintaxis explicita: 
+        entero sencillo:                !!int "17"
+        entero negativo:                !!int -17
+        entero en formato octal:        !!int "0c1264"
+        entero en formato hexadecimal:  !!int AB18
+
+    decimales:
+      sintaxis implícita:
+        decimal sencillo:               17,7
+        decimal negativo:               -17,7
+        decimal en notación cientifica: 
+                                        - 1,879e-27
+                                        - -1,879E27
+      sintaxis explicita: 
+        decimal sencillo:               !!float 17,7
+        decimal negativo:               !!float "-17,7"
+        decimal en notación cientifica: !!float 1,879e-27
+
+    numeros especiales:
+      sintaxis implícita:
+        infinito positivo:
+                                        .inf
+                                        .Inf
+                                        .INF
+                                        +.inf
+                                        +.Inf
+                                        +.INF
+        infinito negativo:
+                                        -.inf
+                                        -.Inf
+                                        -.INF
+        indeterminado:                  
+                                        .nan
+                                        .Nan
+                                        .NAN
+      sintaxis explicita:
+        infinito:                       !!float ".inf"
+        infinito negativo:              !!float -.Inf
+        indeterminado:                  !!float .nan
+
+  valores lógicos:    
+    sintaxis implícita:
+      verdadero:                      
+                                      - true
+                                      - True
+                                      - TRUE
+      falso:                          
+                                      - false
+                                      - False
+                                      - FALSE
+    sintaxis explicita:
+      verdadero:                      !!bool "TRUE"
+      falso:                          !!bool false
+    
+    # Valores lógicos en desuso: USO NO RECOMENDADO
+    valores lógicos adicionales sólo válidos en version YAML 1.1: 
+      verdadero:                      
+                                      - y
+                                      - Y 
+                                      - yes 
+                                      - Yes
+                                      - YES
+                                      - on
+                                      - On
+                                      - ON
+      falso:                          
+                                      - n 
+                                      - N
+                                      - no
+                                      - No
+                                      - NO
+                                      - off
+                                      - Off
+                                      - OFF
+
+    valores nulos:
+      sintaxis implícita:
+                                      -
+                                      - null
+                                      - Null
+                                      - NULL
+      sintaxis explicita:
+                                      - !!null
+                                      - !!null "NULL"
+
+    fechas:
+      sintaxis implícita:
+        sencilla (00:00:00Z):         2030-12-31
+        canónica:                     2030-12-31T23:59:59.9Z
+        iso8601:                      2030-12-31t21:59:59.999-00:00
+        hora separada por espacios:   2030-12-31           21:59:59.9999+00
+        Sin zona horaria (Z):         2030-12-31 21:59:59
+      sintaxis explicita:
+        sencilla (00:00:00Z):         !!timestamp 2030-12-31
+        canónica:                     !!timestamp 2030-12-31T23:59:59.9Z
+        iso8601:                      !!timestamp "2030-12-31t21:59:59.999-00:00"
+        hora separada por espacios:   !!timestamp 2030-12-31           21:59:59.9999+00
+        Sin zona horaria (Z):         !!timestamp "2030-12-31 21:59:59"
+    
+    textos:
+      textos escritos en una linea:
+        sintaxis implícita:
+          sin comillas de ningun tipo:  
+                                        - Texto en una linea sin commillas.
+                                        - Admito los caracteres " ' \#
+                                        - El caracter #, si está precedido de un blanco se considera un comentario
+          con comillas dobles:  
+                                        - "Texto en una linea con commillas dobles."
+                                        - "Caracteres escapados \"\\"
+                                        - "Admito el simbolo #"
+          con comillas sencillas:  
+                                        - 'Texto en una linea con commillas sencillas.'
+                                        - 'Admito los caracteres " \ #'
+                                        - 'El caracter '' debe aparecer escapado, repitiéndolo'.
+        sintaxis explicita:
+                                        - !!str Texto con sintaxis explicita.
+                                        - !!str "Texto con sintaxis explicita."
+
+      textos escritos en varias linea: 
+        sin ningun tipo de marcador previo: # Flow style
+          sin comillas de ningun tipo:  
+                                        Texto en varias lineas sin commillas.
+                                        Admito los caracteres " ' \#.
+                                        Aunque esté escrito en varias lineas 
+                                        el contenido se procesará en una única linea,
+                                        con los saltos de linea convertidos en espacios en blanco
+
+                                        Este texto si se procesa con un salto de linea previo
+                                        al haber dejado una linea en blanco justo arriba.
+          con comillas dobles:  
+                                        "Texto en una linea con commillas dobles."
+                                        "Caracteres escapados \"\\."
+                                        "Aunque esté escrito en varias lineas" 
+                                        "el contenido se procesará en una única lin\"
+                                        "ea. En este último caso, no se incluirá un espacio en blanco"
+ 
+                                        "Este texto si se procesa con un salto de linea previo"
+                                        "al haber dejado una linea en blanco justo arriba."
+          con comillas sencillas:  
+                                        'Texto en una linea con commillas dobles.'
+                                        'Admito los caracteres " \ #'
+
+                                        'Este texto si se procesa con un salto de linea previo'
+                                        'al haber dejado una linea en blanco justo arriba.'
+                                                  
+        con marcadores: # Block style
+          manteniendo los saltos de linea al procesarlo: # literal
+            # En el caso de abajo, al procesar el texto solo se mantiene un salto de linea al final
+            eliminando los saltos de linea finales (todos salvo uno): |
+              Este es un texto cuyos saltos de linea
+              se van a mantener.
+                Y esta linea además empezaría con 2 espacios en blanco.
+              Además admite cualquier caracter, como por ejemplo
+              ' " # $ @ .
+              
+
+            # En el caso de abajo, al procesar el texto no se mantiene ni un salto de linea al final
+            eliminando los saltos de linea finales: |-
+              Este es un texto cuyos saltos de linea
+              se van a mantener.
+                Y esta linea además empezaría con 2 espacios en blanco.
+              Además admite cualquier caracter, como por ejemplo
+              ' " # $ @ .
+
+
+            # En el caso de abajo, al procesar el texto se mantienen todos los saltos de linea al final
+            manteniendo todos los saltos de linea finales: |+
+              Este es un texto cuyos saltos de linea
+              se van a mantener.
+                Y esta linea además empezaría con 2 espacios en blanco.
+              Además admite cualquier caracter, como por ejemplo
+              ' " # $ @ .
+              
+              
+            cualquiera de los casos anteriores puede incluir un numero justo detras del caracter |: |5-
+                  Como estás lineas están sangrada con respecto a la anterior 6 espacios 
+                  en blanco, se quitarían 5 de ellos... por lo que todas las lineas
+                  al ser procesadas aparecen con un espacio en blanco al principio de cada una.
+                    En realidad, esta linea aparecería con 3 espacios em blanco, pues contiene 2 adicionales.
+                  Además, en este caso, despues de la ULTIMA linea no aparecerá ningun salto de linea
+                  al haber utilizado el caracter - después del 5.
+              
+          reemplazando los saltos de linea por espacios en blanco al procesarlo: # folded
+
+...
+---
+nodo1: &valor 
+    clave1: valor1
+    clave2: valor3
+    clave3: [9090,9080]
+nodo2: 
+    clave2: 90
+    <<: *valor

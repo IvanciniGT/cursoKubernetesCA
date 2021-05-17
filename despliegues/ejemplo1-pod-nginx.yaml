@@ -1,0 +1,23 @@
+---
+                # Tipo de recurso que doy de alta en Kubernetes
+kind:           Pod
+                
+                # En que libreria se define ese tipo de objeto
+                # En kubernetes puedo dar de alta librerias de objetos.
+                # Kubernetes ya trae las suyas, pero yo puedo poner más.
+apiVersion:     v1
+metadata:
+                # Identificador del objeto que voy a generar
+    name:       nginx-pod
+    #labels:
+                
+                # Como es ese EN ESTE CASO POD que estoy creando
+spec:
+    containers:
+        - name:     nginx-contenedor
+          image:    nginx:latest
+          #command: 
+          #ports:
+          #volumeMounts:
+          #env:
+---

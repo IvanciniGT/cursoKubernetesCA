@@ -1,0 +1,11 @@
+---
+kind:           Pod
+apiVersion:     v1
+metadata:
+    name:       fedora-pod
+spec:
+    containers:
+        - name:     fedora-contenedor
+          image:    fedora:latest
+          command:  ['sh', '-c' , 'sleep 3600;']
+---
