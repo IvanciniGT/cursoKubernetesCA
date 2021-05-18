@@ -8,16 +8,35 @@ kind:           Pod
 apiVersion:     v1
 metadata:
                 # Identificador del objeto que voy a generar
+                # Se puede repetir en el cluster? A nivel de namespace NO
     name:       nginx-pod
-    #labels:
-                
+    labels:
+                app: miwebserver            
                 # Como es ese EN ESTE CASO POD que estoy creando
 spec:
     containers:
         - name:     nginx-contenedor
           image:    nginx:latest
           #command: 
-          #ports:
+          ports:
+            - containerPort: 80
           #volumeMounts:
           #env:
+# El POD da lugar a UNO o VARIOS CONTENEDORES que se ejecutarán en UNA MAQUINA.
 ---
+kind:           Service
+apiVersion:     v1
+metadata:
+    name:       nginx-service
+spec:
+    ports:
+        - port: 8080        # PUERTO DEL SERVICIO
+          targetPort: 80    # PUERTO AL QUE REDIRIGE EN EL POD
+          nodePort: 30010
+    selector:
+        app: miwebserver
+    #clusterIP: # No lo hacemos normalmente, ya que nos obliga a llevar control de las IPS de todos los servicios
+    type: LoadBalancer
+# El servicio 
+#   Kube-proxy: En un contenedor que está en un pod, que está en qué máquina. En todos los nodos.
+#       Crea rutas en NetFilter. Solo hay redirecciones.

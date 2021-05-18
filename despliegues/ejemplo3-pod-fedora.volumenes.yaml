@@ -1,0 +1,91 @@
+---
+kind:           Pod
+apiVersion:     v1
+metadata:
+    name:       fedora-volumenes-pod
+spec:
+    containers:
+        - name:     fedora-1-contenedor
+          image:    fedora:latest
+          command:  ['sh', '-c' , 'sleep 3600;']
+          volumeMounts:
+            - name: volumen-en-memoria
+              mountPath: /carpetaEnMemoria
+        # WEB SERVER / APP SERVER
+            # Ficheros de log
+
+        # SIDECAR
+        - name:     fedora-2-contenedor
+          image:    fedora:latest
+          command:  ['sh', '-c' , 'sleep 3600;']
+          volumeMounts:
+            - name: volumen-en-memoria
+              mountPath: /otraRuta
+            - name: volumen-en-fs-host
+              mountPath: /otraRutaAlFSHost
+        # Stack- ELK >>>> ElasticSearch (ElasticSearch Logstash (ingesta) Kibana)
+        # Lectura del fichero de logs > fluentd, filebeat
+
+    volumes:
+        - name: volumen-en-memoria
+          #emptyDir: {} # disco
+          emptyDir: 
+            medium: Memory
+            # Creo un volumen, que cuando creo el pod, lo que hace es:
+            # Reservar un trozo de memoria, donde se guardará información
+            # como si fuera un directorio vacio de un disco duro.
+            # Esto se crea en el HOST ( Nodo de Kubernetes )
+        - name: volumen-en-fs-host
+          hostPath:
+            path: /tmp/datos
+            type: DirectoryOrCreate
+                    # FileOrCreate
+                    # File
+            # Crea la carpeta /tmp/datos al crear el pod, si es que no existe.
+            # Y me permite montarlo ahora en los contenedores el pod.
+        - name: mivolumen-amazon
+          persistentVolumeClaim:
+              claimName: mi-peticion-para-la-base-de-datos
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+    name: mi-peticion-para-la-base-de-datos
+spec:
+    storageClassName: redundante #Otras caracteristicas
+    resources:
+        requests:
+            storage: 10Gi # Antes eran los Gb 1024
+    accessModes:
+        - ReadWriteOnce
+#        - ReadWriteMany
+#        - ReadOnceMany
+---
+# Esto es responsabilidad del Administrador del cluster de kubernetes
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+    name: volumen-1
+spec:
+    storageClassName: redundante #Otras caracteristicas
+    capacity:
+        storage: 20Gi # Antes eran los Gb 1024
+    accessModes:
+        - ReadWriteOnce
+    hostPath: 
+        path: /tmp/datos
+        type: DirectoryOrCreate
+#        - ReadWriteMany
+#        - ReadOnceMany
+---
+
+# Persistencia de datos ante recreaciones de un contenedor...
+# Inyectar datos a un contenedor
+# Compartir datos entre contenedores de un pod
+
+# 10Gbit <<<< 1250 Mb/seg
+# HDD 5400 << 150-160 
+# SSD       600 Mbs/seg
+# SSD       2000 Mbs/seg
+
+# DaemonSet Un pod que se ganrantiza que está en cada nodo.

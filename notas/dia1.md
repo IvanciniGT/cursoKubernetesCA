@@ -98,9 +98,15 @@ En entorno aislado que generamos en un cluster de kubernetes, dentro del cual cr
 Una forma de desplegar Pods, que me asegura que de una plantilla de pod, se generan tantos pods como nodos tengo.
 En cada nodo se genera, se crea un pod, basado en la plantilla que se haya configurado.
 
-## Deployment
+## Deployment   |
+## StatfulSet   |   Colección de PODs definidos en base a una TEMPLATE de pod
+## DaemonSet    |
 
-## ReplicaSet
+
+----
+
+
+    ## ReplicaSet
 
 ## ServiceAccount
 
