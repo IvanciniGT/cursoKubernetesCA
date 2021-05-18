@@ -1,0 +1,15 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+    name: mi-peticion-para-la-base-de-datos
+spec:
+    storageClassName: redundante #Otras caracteristicas
+    resources:
+        requests:
+            storage: 10Gi # Antes eran los Gb 1024
+    accessModes:
+        - ReadWriteOnce
+#        - ReadWriteMany
+#        - ReadOnceMany
+

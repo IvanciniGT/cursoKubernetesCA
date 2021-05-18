@@ -1,0 +1,18 @@
+---
+# Esto es responsabilidad del Administrador del cluster de kubernetes
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+    name: volumen-1
+spec:
+    storageClassName: redundante #Otras caracteristicas
+    capacity:
+        storage: 20Gi # Antes eran los Gb 1024
+    accessModes:
+        - ReadWriteOnce
+    hostPath: 
+        path: /tmp/datos
+        type: DirectoryOrCreate
+#        - ReadWriteMany
+#        - ReadOnceMany
+---

@@ -156,3 +156,52 @@ Quién necesita (pide) un volumen? Qué perfil?
 Quién me provee del volumen a mi que el soy el desarrollador?
     El administrador del cluster de Kubernetes
         Decide con quien contrato
+------------------------------------------------------------
+Escalado y HA
+-------------------
+Sistema (app):
+Cluster Pods:
+    PodAppA_n1
+    PodAppA_n2
+    PodAppA_n3
+    PodAppA_n4
+
+¿Cuando me interesa montar un deployment frente a un statefulset?
+
+¿Cuando me interesa montar un statefulset frente a un deployment?
+
+AppA: Webserver (Tiene una pagina montada) - CR: Wordpress
+    P1? Cuantas copias? Solo 1? No tengo ni idea. Si tengo alguna idea... será una ideal inicial.
+        C1: Apache  <<< programas php
+    P2? Cuantas copias? Solo 1? No tengo ni idea
+        C2: MariaDB <<< datos
+
+Los pongo en un pod o en 2 pods?
+SIEMPRE EN 2: ESCALABILIDAD
+
+Para conseguir la escalabilidad:
+    - Deployment
+        Wordpress: Apache + programas php
+    - Statefulset
+        MariaDB
+        
+Si tengo 2 pods con MariaDB
+    Cada pod habrá guarado unos datos. Y quiero que si un pod lo recargo (muevo, recreo...)
+        Se le cargen los datos que él tenia.
+        
+
+KAFKA
+ELASTICSEARCH
+    Nodo1
+        Indice 1 - Shard A
+        Indice 2 - Shard A
+    Nodo2
+        Indice 2 - Shard A
+        Indice 1 - Shard B
+        Indice 1 - Shard A
+X    Nodo3
+---------------------------------        Indice 1 - Shard B
+    Nodo 4
+        Indice 1 - Shard B    < Que elasticsearch en su cluster replique los datos...
+        Volver a montar el mismo disco duro, que ya tiene los datos.
+        

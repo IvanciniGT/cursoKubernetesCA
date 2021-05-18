@@ -1,0 +1,44 @@
+---
+kind:           Deployment
+apiVersion:     apps/v1
+metadata:
+    name:       nginx-deployment
+
+spec:
+    replicas: 5
+    
+    selector:
+        matchLabels:
+            app: miwebserver
+    
+    template:
+        metadata:
+            labels:
+                app: miwebserver            
+        spec:
+            containers:
+                - name:     nginx-contenedor
+                  image:    nginx:latest
+                  ports:
+                    - containerPort: 80
+---
+kind:           HorizontalPodAutoscaler
+apiVersion:     autoscaling/v2beta2
+metadata:
+    name:       nginx-deployment-autoscaler
+spec:
+    scaleTargetRef:
+        kind:           Deployment
+        apiVersion:     apps/v1
+        name:           nginx-deployment
+    minReplicas: 2
+    maxReplicas: 10
+    metrics:
+        - type: Resource
+          resource: 
+            name: cpu
+            target: 
+                type: Utilization
+                averageUtilization: 60
+
+# metric-server            

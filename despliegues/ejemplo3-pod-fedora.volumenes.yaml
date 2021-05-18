@@ -23,6 +23,8 @@ spec:
               mountPath: /otraRuta
             - name: volumen-en-fs-host
               mountPath: /otraRutaAlFSHost
+            - name: mi-peticion-volumen
+              mountPath: /pvc
         # Stack- ELK >>>> ElasticSearch (ElasticSearch Logstash (ingesta) Kibana)
         # Lectura del fichero de logs > fluentd, filebeat
 
@@ -43,41 +45,9 @@ spec:
                     # File
             # Crea la carpeta /tmp/datos al crear el pod, si es que no existe.
             # Y me permite montarlo ahora en los contenedores el pod.
-        - name: mivolumen-amazon
+        - name: mi-peticion-volumen
           persistentVolumeClaim:
               claimName: mi-peticion-para-la-base-de-datos
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-    name: mi-peticion-para-la-base-de-datos
-spec:
-    storageClassName: redundante #Otras caracteristicas
-    resources:
-        requests:
-            storage: 10Gi # Antes eran los Gb 1024
-    accessModes:
-        - ReadWriteOnce
-#        - ReadWriteMany
-#        - ReadOnceMany
----
-# Esto es responsabilidad del Administrador del cluster de kubernetes
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-    name: volumen-1
-spec:
-    storageClassName: redundante #Otras caracteristicas
-    capacity:
-        storage: 20Gi # Antes eran los Gb 1024
-    accessModes:
-        - ReadWriteOnce
-    hostPath: 
-        path: /tmp/datos
-        type: DirectoryOrCreate
-#        - ReadWriteMany
-#        - ReadOnceMany
----
 
 # Persistencia de datos ante recreaciones de un contenedor...
 # Inyectar datos a un contenedor
