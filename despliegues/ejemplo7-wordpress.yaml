@@ -1,4 +1,19 @@
 ---
+kind:           ConfigMap
+apiVersion:     v1
+metadata:
+    name:       props-bbdd
+data:
+    USER: usuario
+    NAME: wordpress
+---
+kind:           Secret
+apiVersion:     v1
+metadata:
+    name:       props-bbdd
+data:
+    PASSWORD: cGFzc3dvcmQ=
+---
 # Deployment Wordpress
 kind:           Deployment
 apiVersion:     apps/v1
@@ -25,12 +40,25 @@ spec:
                   env:
                     - name: WORDPRESS_DB_HOST
                       value: mariadb-service
+                      
                     - name: WORDPRESS_DB_USER
-                      value: usuario
+                      valueFrom: 
+                        configMapKeyRef:
+                            name: props-bbdd
+                            key:  USER
+                            
                     - name: WORDPRESS_DB_PASSWORD
-                      value: password
+                      valueFrom: 
+                        secretKeyRef:
+                            name: props-bbdd
+                            key:  PASSWORD
+
                     - name: WORDPRESS_DB_NAME
-                      value: wordpress
+                      valueFrom: 
+                        configMapKeyRef:
+                            name: props-bbdd
+                            key:  NAME
+
                   volumeMounts:
                     - name: datos-wordpress
                       mountPath: /var/www/html
@@ -124,11 +152,20 @@ spec:
                     - containerPort: 3306
                   env:
                     - name: MYSQL_DATABASE
-                      value: wordpress
+                      valueFrom: 
+                        configMapKeyRef:
+                            name: props-bbdd
+                            key:  NAME
                     - name: MYSQL_PASSWORD
-                      value: pawword
+                      valueFrom: 
+                        secretKeyRef:
+                            name: props-bbdd
+                            key:  PASSWORD
                     - name: MYSQL_USER
-                      value: usuario
+                      valueFrom: 
+                        configMapKeyRef:
+                            name: props-bbdd
+                            key:  USER
                     - name: MYSQL_RANDOM_ROOT_PASSWORD
                       value: "1"
                   volumeMounts:
