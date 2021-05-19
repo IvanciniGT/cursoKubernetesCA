@@ -60,12 +60,16 @@ do
     then
         uninstall
         shift
+        exit 0
     elif [[ "$1" == "--patch-service" ]]
     then
         patchService
         shift
+    elif [[ "$1" == "--help" ]]
+    then
+        echo Parámetros admitidos: --install, --get-password, --uninstall, --patch-service
     else 
-        echo Parametro incorrecto: Se admite: --install, --get-password, --uninstall
+        echo Parámetro incorrecto: Se admite: --install, --get-password, --uninstall, --patch-service
         exit 1
     fi
 done

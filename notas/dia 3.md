@@ -20,3 +20,24 @@ DOCKER, KUBERNETES, OPENSHIFT >>>> PONE EN MARCHA UN CONTENEDOR:
         
 Nodo17
     Taint: AppWeb - Efecto: NoSchedule
+    
+Nevegador Chrome: Entrar con certificado no válido. Escribir: thisisunsafe
+
+
+------
+Monitorización:
+ELK:
+    - ElasticSearch:                        Base de datos
+    - Kibana:                               Interfaz gráfica para explotar la información
+    - Logstash (fluentd, filebeat, kafka)   Scrapper... El que captura los datos
+
+En Kubernetes, cual es el sistema de monitorización más utilizado? 
+    - Prometheus:                           Base de datos
+    - Grafana:                              Interfaz gráfica para explotar la información
+    - Metrics-server                        Scrapper... El que captura los datos
+
+
+
+
+
+
