@@ -1,0 +1,164 @@
+---
+# Deployment Wordpress
+kind:           Deployment
+apiVersion:     apps/v1
+metadata:
+    name:       wordpress-deployment
+
+spec:
+    replicas: 1
+    
+    selector:
+        matchLabels:
+            app: wordpress
+    
+    template:
+        metadata:
+            labels:
+                app: wordpress            
+        spec:
+            containers:
+                - name:     wordpress-contenedor
+                  image:    wordpress:latest
+                  ports:
+                    - containerPort: 80
+                  env:
+                    - name: WORDPRESS_DB_HOST
+                      value: mariadb-service
+                    - name: WORDPRESS_DB_USER
+                      value: usuario
+                    - name: WORDPRESS_DB_PASSWORD
+                      value: password
+                    - name: WORDPRESS_DB_NAME
+                      value: wordpress
+                  volumeMounts:
+                    - name: datos-wordpress
+                      mountPath: /var/www/html
+            volumes:
+                - name: datos-wordpress
+                  persistentVolumeClaim:
+                    claimName: pvc-wordpress
+
+---
+# Peticion de Volumen Persistente para los datos Wordpress
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+    name: pvc-wordpress
+spec:
+    storageClassName: redundante 
+    resources:
+        requests:
+            storage: 10Gi 
+    accessModes:
+        - ReadWriteOnce
+---
+# Volumen Persistente para los datos Wordpress >>> logs | updload fichero IMAGEN
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+    name: volumen-wordpress
+spec:
+    storageClassName: redundante #Otras caracteristicas
+    capacity:
+        storage: 20Gi # Antes eran los Gb 1024
+    accessModes:
+        - ReadWriteOnce
+    hostPath: 
+        path: /home/ubuntu/environment/datos/wordpress
+        type: DirectoryOrCreate
+---
+# Service Wordpress
+kind:           Service
+apiVersion:     v1
+metadata:
+    name:       wordpress-service
+spec:
+    ports:
+        - port: 80
+          targetPort: 80
+          nodePort: 30020
+    selector:
+        app: wordpress
+    type: NodePort
+
+---
+# Service MariaDB
+kind:           Service
+apiVersion:     v1
+metadata:
+    name:       mariadb-service
+spec:
+    ports:
+        - port: 3306
+          targetPort: 3306
+    selector:
+        app: mariadb
+    type: ClusterIP
+---
+# StatefulSet MariaDB
+
+kind:           StatefulSet
+apiVersion:     apps/v1
+metadata:
+    name:       mariadb-statefulset
+
+spec:
+    replicas: 1
+    
+    selector:
+        matchLabels:
+            app: mariadb
+    
+    serviceName: mariadb-service
+    
+    template:
+        metadata:
+            labels:
+                app: mariadb            
+        spec:
+            containers:
+                - name:     mariadb-contenedor
+                  image:    mysql:5.7
+                  ports:
+                    - containerPort: 3306
+                  env:
+                    - name: MYSQL_DATABASE
+                      value: wordpress
+                    - name: MYSQL_PASSWORD
+                      value: pawword
+                    - name: MYSQL_USER
+                      value: usuario
+                    - name: MYSQL_RANDOM_ROOT_PASSWORD
+                      value: "1"
+                  volumeMounts:
+                    - name: datos-mariadb
+                      mountPath: /var/lib/mysql
+    # Plantilla de peticion de Volumen Persistente para los datos MariaBD
+    volumeClaimTemplates:
+        - metadata:
+            name: datos-mariadb
+          spec:
+            storageClassName: redundantedb
+            resources:
+                requests:
+                    storage: 10Gi 
+            accessModes:
+                - ReadWriteOnce
+
+---
+# Volumen Persistente para los datos MariaBD
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+    name: volumen-mariadb
+spec:
+    storageClassName: redundantedb #Otras caracteristicas
+    capacity:
+        storage: 20Gi # Antes eran los Gb 1024
+    accessModes:
+        - ReadWriteOnce
+    hostPath: 
+        path: /home/ubuntu/environment/datos/mariadb
+        type: DirectoryOrCreate
+---
