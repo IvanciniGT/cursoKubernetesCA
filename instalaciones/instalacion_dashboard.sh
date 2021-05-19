@@ -41,6 +41,9 @@ function getPassword(){
     echo
     
 }
+function patchService(){
+    kubectl patch service kubernetes-dashboard -n kubernetes-dashboard --type=json -p '[{"op":"replace","path":"/spec/type","value":"NodePort"}]'
+}
 
 while [[ $# != 0 ]]
 do
@@ -57,8 +60,17 @@ do
     then
         uninstall
         shift
+    elif [[ "$1" == "--patch-service" ]]
+    then
+        patchService
+        shift
     else 
         echo Parametro incorrecto: Se admite: --install, --get-password, --uninstall
         exit 1
     fi
 done
+echo
+PUERTO=$(kubectl get service kubernetes-dashboard -n kubernetes-dashboard -o jsonpath="{.spec.ports[0].nodePort}")
+
+echo Url de acceso: https://$(curl -s ifconfig.me):$PUERTO/
+echo
