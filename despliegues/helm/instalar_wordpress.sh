@@ -1,16 +1,46 @@
 #!/bin/bash
 
 function install(){
+    
+    cat << EOF | kubectl apply -f -
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+    name: volumen-wp-1
+spec:
+    capacity:
+        storage: 10Gi
+    accessModes:
+        - ReadWriteOnce
+    hostPath: 
+        path: /home/ubuntu/environment/datos/wp1
+        type: DirectoryOrCreate
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+    name: volumen-wp-2
+spec:
+    capacity:
+        storage: 10Gi
+    accessModes:
+        - ReadWriteOnce
+    hostPath: 
+        path: /home/ubuntu/environment/datos/wp2
+        type: DirectoryOrCreate
+---
+EOF
     helm repo add bitnami https://charts.bitnami.com/bitnami
-    helm install miWordpress bitnami/wordpress \
+    helm install mi-wordpress bitnami/wordpress \
         --namespace wordpress \
         --create-namespace \
-        -f wordpress.values.yaml
+        -f wordpress.values.yaml 
 }
     
 
 function uninstall(){
-    helm uninstall miWordpress \
+    helm uninstall mi-wordpress \
         --namespace wordpress
 }
 function test_install(){
