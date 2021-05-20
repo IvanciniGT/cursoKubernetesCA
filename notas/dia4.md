@@ -78,3 +78,11 @@ RAM EN UN SOFTWARE <<<  Proceso
       Sea mucho o poco... es constante y proporcional al numero de usuarios.
       Buffers
     - Caches  Hasta cuanto crece? <<<<<
+-------
+NFS
+
+Pod
+Service Account
+Role
+    mirar pvc
+    crear pv y delete
