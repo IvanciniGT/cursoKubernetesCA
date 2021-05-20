@@ -32,6 +32,7 @@ spec:
             labels:
                 app: wordpress            
         spec:
+
             containers:
                 - name:     wordpress-contenedor
                   image:    wordpress:latest
