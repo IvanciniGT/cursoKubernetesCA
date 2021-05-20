@@ -12,6 +12,9 @@ spec:
             app: miwebserver
     
     template:
+        nodeSelector:
+            Zona: EUROPA
+            
         metadata:
             labels:
                 app: miwebserver            
