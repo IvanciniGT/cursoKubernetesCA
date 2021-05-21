@@ -13,7 +13,7 @@ sudo systemctl restart docker
 sudo swapoff -a # Desactiva solo ahora
 # Comprobar con: free
 sudo vim /etc/fstab # Desactivarlo permanentemente
-
+#
 # Pasos
 # Paso 1: Alta del repo de kubernetes
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -

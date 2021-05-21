@@ -1,0 +1,88 @@
+POD | DEPLOYMENT
+---
+kind: Pod
+apiVersion: v1
+
+metadata:
+    name: MiPod
+
+spec: # de un pod... o de un template de pod
+    containers:
+        - name: EL QUE SEA
+          .....
+          volumeMount:
+            - name: UN_VOLUMEN
+              path: /la/ruta/que/sea
+             
+    volumes:
+        - name: UN_VOLUMEN
+          #QUE TIPO DE VOLUMEN MONTO (FISICAMENTE)
+          emptyDir:
+          hostPath:
+            type: DirectoryOrCreate
+          volumen_TIPO_AWS
+          ## Si el desarrollador quiere
+          persistentVolumeClaim:
+            claimName: MIPVC
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+
+metadata:
+    name: MIPVC
+SPEC
+---
+MIPVC <> MIPV
+El PV de donde sale? 2 opciones:
+- Me lo creo a manubrio
+- Solicito un volumen a un provisionador (sea nfs, aws, azure... iscsi. lo que sea)
+    - StorageClass
+---
+kind: PersistentVolume
+apiVersion: v1
+
+metadata:
+    name: MIPV
+SPEC
+
+
+
+
+----
+
+kind: StatefulSet
+apiVersion: apps/v1
+
+metadata:
+    name: MI_STATEFULSET_NAME
+
+spec:
+    replicas:
+    serviceName:
+    
+    template: ### Plantilla de qué? POD
+        - name: MI_POD
+          .......
+          containers:
+                - image: MARIADB
+                  ....
+                  volumeMounts:
+                    - name: datos_del_maria_db
+                      path: /El path que sea
+                    - name: directorio_de_logs
+                      path:
+                - image: filebeat / fluentd
+                  volumeMounts:
+                    - name: directorio_de_logs
+                      path:
+          ###volumes: NO ES VALIDO EN STATFULSET
+    volumeClaimTemplates:
+        - name: datos_del_maria_db
+            .... spec 
+            storageClass: >>>>> Provisionador De volumenes persistentes
+        - name: directorio_de_logs
+            .... spec 
+
+
+
+
