@@ -1,0 +1,68 @@
+kind:           StatefulSet
+apiVersion:     apps/v1
+metadata:
+    name:       {{ .Release.Name }}-maestro
+
+spec:
+    replicas: {{ .Values.elasticsearch.master.replicas }}
+    
+    selector:
+        matchLabels:
+            app: {{ .Release.Name }}-maestro
+
+    {{ with .Values.elasticsearch.master.service -}}
+    serviceName: {{ if .customName }}    
+                    {{- .customName }}
+                 {{- else }}
+                    {{- $.Release.Name }}-{{ .customSuffix }}
+                 {{- end }} 
+    {{- end }}
+    
+    template:
+        metadata:
+            labels:
+                app: {{ .Release.Name }}-maestro            
+        spec:
+            containers:
+                - name:     maestro-contenedor
+                  {{ with .Values.elasticsearch.image }}
+                  image:    {{ $.Values.elasticsearch.image.repo }}:{{ .tag }} 
+                  {{ end }}
+                  ports:
+                    - containerPort: {{ .Values.elasticsearch.service.interno }}
+                    - containerPort: {{ .Values.elasticsearch.service.externo }}
+                  env:
+                    - name: node.name
+                      valueFrom:
+                            fieldRef:
+                                fieldPath: metadata.name
+                    - name: cluster.name
+                      value: "MiCluster"
+                    - name: discovery.seed_hosts
+                      value: "maestro-statefulset-0.maestro-service,maestro-statefulset-1.maestro-service,maestro-statefulset-2.maestro-service"
+                    - name: cluster.initial_master_nodes
+                      value: "maestro-statefulset-0,maestro-statefulset-1,maestro-statefulset-2"
+                    - name: ES_JAVA_OPTS
+                      value: "-Xms220m -Xmx220m"
+                    - name: node.master
+                      value: "true"
+                    - name: node.voting_only
+                      value: "false"
+                    - name: node.data
+                      value: "false"
+                    - name: node.remote_cluster_client
+                      value: "false"
+                  volumeMounts:
+                    - name: datos-maestro
+                      mountPath: /usr/share/elasticsearch/data
+    # Plantilla de peticion de Volumen Persistente para los datos Maestro
+    volumeClaimTemplates:
+        - metadata:
+            name: datos-maestro
+          spec:
+            storageClassName: volumen-nfs
+            resources:
+                requests:
+                    storage: 10Gi 
+            accessModes:
+                - ReadWriteOnce

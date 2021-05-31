@@ -1,0 +1,17 @@
+apiVersion: v2
+
+version: 0.1.0          # Version del chart
+
+name: elasticsearch
+description: A Helm chart for Kubernetes
+appVersion: "7.12.0"    # Version de la aplicacion
+
+type: application
+# home: URL del proyecto
+# icon: Imagen para el chart (que se utiliza en helm, o en otros.)
+# keywords: Busquedas dentro de un repo
+# mantainers: Quien mantiene el chart
+# dependencies:
+#   - name: 
+#     repository:
+#     version:

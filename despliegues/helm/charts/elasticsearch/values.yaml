@@ -1,0 +1,20 @@
+elasticsearch:
+  image:
+    repo: docker.elastic.co/elasticsearch/elasticsearch
+    tag:  7.12.0
+  
+  service:
+    interno: 9300
+    externo: 9200
+  
+  master:
+    replicas: 3
+    
+    service:
+      customSuffix: maestro
+      customName: ""
+    
+  data:
+    replicas: 2
+
+kibana: ~
