@@ -13,7 +13,18 @@ spec:
     
     #replicas: {{ .Values.elasticsearch.master.replicas | default 3 }}
     
-    TIPO: {{ typeOf (.Values.elasticsearch.master.replicas | int )}}
+    {{- if ne (typeOf .Values.elasticsearch.master.replicas) "float64" }}
+    {{- fail "El numero de replicas debe ser un NUMERO pero ENTERO !! PRIINGAO !!!!" }}
+    {{- end }}
+
+    {{- if ne (.Values.elasticsearch.master.replicas | int | float64) .Values.elasticsearch.master.replicas }}
+    {{- fail "El numero de replicas debe ser un NUMERO pero ENTERO !! PRIINGAO !!!!" }}
+    {{- end }}
+    
+    {{- if not (ge (.Values.elasticsearch.master.replicas |int ) 0 )}}
+    {{- fail "El numero de replicas debe ser un NUMERO pero ENTERO POSITIVO !! PRIINGAO !!!!" }}
+    {{- end }}
+    
     # if eq DATO VALOR  # gt lt ge le ne
     
     replicas: {{ .Values.elasticsearch.master.replicas | required "Que no has pasado el numero de replicas, pringao !!!!: FALTA el parametro elasticsearch.master.replicas"}}
