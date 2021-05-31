@@ -1,0 +1,4 @@
+Ya tienes el elastic funcionando compañer@:
+
+Si quiere la contraseña, puede sacarla ejecutando:
+kubectl get secret {{ .Release.Name }}-elastic-password -n {{ .Release.Namespace }} -o jsonpath={.data.ELASTIC_PASSWORD} | base64 --decode

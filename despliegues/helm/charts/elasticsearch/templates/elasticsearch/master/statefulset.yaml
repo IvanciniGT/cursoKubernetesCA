@@ -49,7 +49,19 @@ spec:
                   ports:
                     - containerPort: {{ .Values.elasticsearch.service.interno }}
                     - containerPort: {{ .Values.elasticsearch.service.externo }}
+                  
+                  {{- if or .Values.elasticsearch.master.customEnvVars .Values.elasticsearch.customEnvVars }}
+                  envFrom:
+                    - configMapRef:
+                        name: {{ .Release.Name }}-master-custom-env-vars
+                  {{- end }}
+                  
                   env:
+                    - name: ELASTIC_PASSWORD
+                      valueFrom:
+                            secretKeyRef:
+                                name: {{ .Release.Name }}-elastic-password
+                                key: ELASTIC_PASSWORD
                     - name: node.name
                       valueFrom:
                             fieldRef:
@@ -70,6 +82,8 @@ spec:
                       value: "false"
                     - name: node.remote_cluster_client
                       value: "false"
+    
+{{- if .Values.elasticsearch.master.persistence.enabled }}                      
                   volumeMounts:
                     - name: datos-maestro
                       mountPath: /usr/share/elasticsearch/data
@@ -78,9 +92,10 @@ spec:
         - metadata:
             name: datos-maestro
           spec:
-            storageClassName: volumen-nfs
+            storageClassName: {{ .Values.elasticsearch.master.persistence.storageClass }}
             resources:
                 requests:
-                    storage: 10Gi 
+                    storage: {{ .Values.elasticsearch.master.persistence.storageCapacity }} 
             accessModes:
-                - ReadWriteOnce
+                - {{ .Values.elasticsearch.master.persistence.accessMode }}
+{{- end }}

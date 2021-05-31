@@ -1,0 +1,12 @@
+{{- if or .Values.elasticsearch.master.customEnvVars .Values.elasticsearch.customEnvVars }}
+
+kind: ConfigMap
+apiVersion: v1
+
+metatada:
+    name:  {{ .Release.Name }}-master-custom-env-vars
+    
+{{ $merged_env_vars := merge .Values.elasticsearch.master.customEnvVars .Values.elasticsearch.customEnvVars}}
+data: {{ include "elasticsearch.envconfigmap" $merged_env_vars | nindent 2 }}
+
+{{- end }}

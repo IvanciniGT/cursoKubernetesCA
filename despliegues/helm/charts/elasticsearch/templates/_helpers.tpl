@@ -24,3 +24,10 @@ image: {{ .Values.elasticsearch.image.repo }}:{{ if .Values.elasticsearch.image.
 image: {{ .Values.elasticsearch.image.repo }}:{{ .Values.elasticsearch.image.tag | default .Chart.AppVersion  -}} 
 {{- end -}}
 {{/* image: {{ .Values.elasticsearch.image.repo }}:{{ default .Chart.AppVersion .Values.elasticsearch.image.tag -}} */}}
+
+
+{{- define "elasticsearch.envconfigmap" -}}
+{{- range $clave, $valor := . }}
+{{ $clave }}: {{ $valor | quote }}
+{{- end -}}
+{{- end -}}
