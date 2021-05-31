@@ -1,3 +1,7 @@
+kind: elasticSearch
+apiVersion: QUE ME OFRECE EL OPERADOR DE TURNO
+
+---
 POD | DEPLOYMENT
 ---
 kind: Pod
