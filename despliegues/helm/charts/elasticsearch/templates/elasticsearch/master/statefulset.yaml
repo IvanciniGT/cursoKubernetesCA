@@ -4,7 +4,19 @@ metadata:
     name:       {{ .Release.Name }}-maestro
 
 spec:
-    replicas: {{ .Values.elasticsearch.master.replicas }}
+
+    #{{ if not .Values.elasticsearch.master.replicas -}}
+    #{{- fail "Que no has pasado el numero de replicas, pringao !!!!: FALTA el parametro elasticsearch.replicas" }}
+    #{{- else -}}
+    #replicas: {{ .Values.elasticsearch.master.replicas }}
+    #{{- end }}
+    
+    #replicas: {{ .Values.elasticsearch.master.replicas | default 3 }}
+    
+    TIPO: {{ typeOf (.Values.elasticsearch.master.replicas | int )}}
+    # if eq DATO VALOR  # gt lt ge le ne
+    
+    replicas: {{ .Values.elasticsearch.master.replicas | required "Que no has pasado el numero de replicas, pringao !!!!: FALTA el parametro elasticsearch.master.replicas"}}
     
     selector:
         matchLabels:
@@ -20,9 +32,9 @@ spec:
         spec:
             containers:
                 - name:     maestro-contenedor
-                  {{ with .Values.elasticsearch.image }}
-                  image:    {{ $.Values.elasticsearch.image.repo }}:{{ .tag }} 
-                  {{ end }}
+                  
+                  {{ include "elasticsearch.image" . }}
+                  
                   ports:
                     - containerPort: {{ .Values.elasticsearch.service.interno }}
                     - containerPort: {{ .Values.elasticsearch.service.externo }}

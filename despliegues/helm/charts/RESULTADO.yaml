@@ -3,7 +3,7 @@
 kind:           Service
 apiVersion:     v1
 metadata:
-    name:       maestro-service
+    name:       RELEASE-NAME-maestro}
 spec:
     ports:
         - name: serving
@@ -23,6 +23,14 @@ metadata:
     name:       RELEASE-NAME-maestro
 
 spec:
+
+    ##replicas: 3
+    #
+    
+    #replicas: 3
+    
+    TIPO: int
+    
     replicas: 3
     
     selector:
@@ -39,7 +47,7 @@ spec:
             containers:
                 - name:     maestro-contenedor
                   
-                  image:    docker.elastic.co/elasticsearch/elasticsearch:7.12.0 
+                  image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
                   
                   ports:
                     - containerPort: 9300

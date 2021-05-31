@@ -1,7 +1,7 @@
 elasticsearch:
   image:
     repo: docker.elastic.co/elasticsearch/elasticsearch
-    tag:  7.12.0
+    #tag:  7.12.1
   
   service:
     interno: 9300
@@ -13,6 +13,13 @@ elasticsearch:
     service:
       customSuffix: maestro
       customName: ""
+      
+    persistence:
+      enable: true
+      # Si activas la persistencia, DEBES informar los siguientes campos:
+      #storageClass:
+      #storageCapacity:
+      #accessMode:
     
   data:
     replicas: 2
