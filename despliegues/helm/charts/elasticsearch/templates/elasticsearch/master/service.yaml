@@ -1,7 +1,7 @@
 kind:           Service
 apiVersion:     v1
 metadata:
-    name:       maestro-service
+    name:       {{ include "elasticsearch.masterservicename" . }}}
 spec:
     ports:
         - name: serving

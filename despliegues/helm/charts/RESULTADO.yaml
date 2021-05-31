@@ -29,8 +29,8 @@ spec:
         matchLabels:
             app: RELEASE-NAME-maestro
 
-    serviceName: RELEASE-NAME-maestro
-    
+    serviceName: RELEASE-NAME-maestro 
+
     template:
         metadata:
             labels:
@@ -52,7 +52,7 @@ spec:
                     - name: cluster.name
                       value: "MiCluster"
                     - name: discovery.seed_hosts
-                      value: "maestro-statefulset-0.maestro-service,maestro-statefulset-1.maestro-service,maestro-statefulset-2.maestro-service"
+                      value: "maestro-statefulset-0.RELEASE-NAME-maestro ,maestro-statefulset-1.RELEASE-NAME-maestro ,maestro-statefulset-2.RELEASE-NAME-maestro "
                     - name: cluster.initial_master_nodes
                       value: "maestro-statefulset-0,maestro-statefulset-1,maestro-statefulset-2"
                     - name: ES_JAVA_OPTS

@@ -10,14 +10,9 @@ spec:
         matchLabels:
             app: {{ .Release.Name }}-maestro
 
-    {{ with .Values.elasticsearch.master.service -}}
-    serviceName: {{ if .customName }}    
-                    {{- .customName }}
-                 {{- else }}
-                    {{- $.Release.Name }}-{{ .customSuffix }}
-                 {{- end }} 
-    {{- end }}
-    
+    {{ $nombreservicio := include "elasticsearch.masterservicename" . -}} 
+    serviceName: {{ $nombreservicio }} 
+
     template:
         metadata:
             labels:
@@ -39,7 +34,7 @@ spec:
                     - name: cluster.name
                       value: "MiCluster"
                     - name: discovery.seed_hosts
-                      value: "maestro-statefulset-0.maestro-service,maestro-statefulset-1.maestro-service,maestro-statefulset-2.maestro-service"
+                      value: "maestro-statefulset-0.{{ $nombreservicio }} ,maestro-statefulset-1.{{ $nombreservicio }} ,maestro-statefulset-2.{{ $nombreservicio }} "
                     - name: cluster.initial_master_nodes
                       value: "maestro-statefulset-0,maestro-statefulset-1,maestro-statefulset-2"
                     - name: ES_JAVA_OPTS
