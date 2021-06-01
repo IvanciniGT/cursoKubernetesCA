@@ -1,0 +1,25 @@
+# Este fichero está reando unas reglas que se aplicarán sobre qué?
+# nginX
+#
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+
+metadata:
+    name: wordpress-np
+
+spec:
+    podSelector:
+        matchLabels:
+            app: wordpress-db
+    policyTypes:
+        - Ingress    # Quien puede conectar con los pod que tengan esa etiqueta
+        - Egress     # Con quien pueden conectar los pod que tengan esa etiqueta
+    ingress:
+        - from:
+            - namespaceSelector:
+                matchLabels:
+                    app: wordpress
+            - podSelector:
+                matchLabels:
+                    app: wordpress
+    egress: {}
